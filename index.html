@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#2b1a11">
+<meta name="description" content="Ghost Caffee — مقهى دافئ للمحادثات والقصص والمجموعات.">
+<title>Ghost Caffee</title>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css?v=7.4.4">
+</head>
+<body>
+
+<!-- ==================== Splash ==================== -->
+<div id="splash-screen" class="splash-screen">
+  <div class="splash-logo"><img src="icons/icon-192.png" alt="Ghost Caffee"></div>
+  <h1 id="splash-title">Ghost Caffee</h1>
+  <p class="splash-tagline">قهوة دافئة، وصحبة أقرب</p>
+  <div class="splash-loader"></div>
+</div>
+
+<!-- ==================== تسجيل الحساب والدخول ==================== -->
+<div id="auth-screen" class="auth-screen hidden">
+  <div class="auth-container account-auth-container">
+    <div class="auth-coffee-glow" aria-hidden="true"></div>
+    <div class="auth-logo"><img src="icons/icon-192.png" alt="شبح Ghost Caffee"></div>
+    <div class="auth-brand">Ghost <span>Caffee</span></div>
+    <p class="auth-subtitle">مقهى صغير للمحادثات والقصص والأصدقاء، بهويتك الخاصة.</p>
+    <div class="auth-tabs" role="tablist" aria-label="الحساب">
+      <button class="auth-tab active" type="button" data-tab="register" role="tab" aria-selected="true">إنشاء حساب</button>
+      <button class="auth-tab" type="button" data-tab="login" role="tab" aria-selected="false">تسجيل الدخول</button>
+    </div>
+    <form id="register-form" class="auth-form" autocomplete="on">
+      <label class="auth-field-label" for="reg-username">اسم المستخدم</label>
+      <div class="input-group">
+        <span class="input-icon">@</span>
+        <input type="text" id="reg-username" placeholder="مثال: ghost_cafe" minlength="3" maxlength="20" pattern="[a-z0-9_]{3,20}" autocapitalize="none" autocomplete="username" spellcheck="false" required>
+      </div>
+      <label class="auth-field-label" for="reg-password">كلمة المرور</label>
+      <div class="input-group">
+        <span class="input-icon">🔒</span>
+        <input type="password" id="reg-password" placeholder="6 أحرف على الأقل" minlength="6" autocomplete="new-password" required>
+      </div>
+      <label class="auth-field-label" for="reg-confirm">تأكيد كلمة المرور</label>
+      <div class="input-group">
+        <span class="input-icon">✓</span>
+        <input type="password" id="reg-confirm" placeholder="أعد كتابة كلمة المرور" minlength="6" autocomplete="new-password" required>
+      </div>
+      <p class="auth-helper">اسم المستخدم من 3 إلى 20 رمزاً: أحرف إنجليزية صغيرة أو أرقام أو شرطة سفلية.</p>
+      <p class="device-info" id="device-info-reg"></p>
+      <button type="submit" class="btn-primary auth-enter-btn"><span>☕</span> إنشاء حساب Ghost Caffee</button>
+    </form>
+    <form id="login-form" class="auth-form hidden" autocomplete="on">
+      <label class="auth-field-label" for="login-username">اسم المستخدم</label>
+      <div class="input-group">
+        <span class="input-icon">@</span>
+        <input type="text" id="login-username" placeholder="اسم المستخدم" minlength="3" maxlength="20" autocapitalize="none" autocomplete="username" spellcheck="false" required>
+      </div>
+      <label class="auth-field-label" for="login-password">كلمة المرور</label>
+      <div class="input-group">
+        <span class="input-icon">🔒</span>
+        <input type="password" id="login-password" placeholder="كلمة المرور" autocomplete="current-password" required>
+      </div>
+      <button type="submit" class="btn-primary auth-enter-btn"><span>☕</span> دخول إلى المقهى</button>
+    </form>
+    <div class="auth-divider"><span>حساب خاص بالتطبيق</span></div>
+    <p class="auth-promise">لا تحتاج إلى بريد إلكتروني أو Google.</p>
+    <p class="auth-warning">اختر كلمة مرور واحفظها؛ لا يستطيع التطبيق استعادتها نيابةً عنك.</p>
+    <p id="auth-error" class="auth-error hidden" role="alert"></p>
+    <button id="auth-retry" class="btn-secondary hidden" type="button">↻ إعادة المحاولة</button>
+  </div>
+</div>
+
+<!-- ==================== PIN ==================== -->
+<div id="pin-screen" class="pin-screen hidden">
+  <div class="pin-container">
+    <div class="pin-logo">🔐</div>
+    <h3>أدخل رمز PIN</h3>
+    <div class="pin-dots" id="pin-dots">
+      <span></span><span></span><span></span><span></span>
+    </div>
+    <div class="pin-pad" id="pin-pad">
+      <button data-pin="1">1</button><button data-pin="2">2</button><button data-pin="3">3</button>
+      <button data-pin="4">4</button><button data-pin="5">5</button><button data-pin="6">6</button>
+      <button data-pin="7">7</button><button data-pin="8">8</button><button data-pin="9">9</button>
+      <button data-pin="del">⌫</button><button data-pin="0">0</button><button data-pin="ok">✓</button>
+    </div>
+    <p class="pin-error hidden" id="pin-error">رمز خاطئ</p>
+  </div>
+</div>
+
+<!-- ==================== App Screen ==================== -->
+<div id="app-screen" class="app-screen hidden">
+
+  <!-- ============ Sidebar ============ -->
+  <aside id="sidebar" class="sidebar">
+    <div class="app-brand-strip">
+      <img src="icons/ghost-caffee-icon.svg" alt="" width="34" height="34">
+      <div class="brand-wordmark-text"><strong>Ghost Caffee</strong></div>
+    </div>
+    <div class="sidebar-header">
+      <div class="user-avatar" id="my-avatar">م</div>
+      <div class="user-info">
+        <span class="user-name" id="my-username">المستخدم</span>
+        <span class="user-status" id="my-status">متصل</span>
+      </div>
+      <div class="sidebar-actions">
+        <button id="btn-new-chat" class="icon-btn" title="محادثة جديدة">➕</button>
+        <button id="btn-new-group" class="icon-btn" title="مجموعة جديدة">👥</button>
+        <button id="btn-stories" class="icon-btn" title="قصص">📷</button>
+        <button id="btn-menu" class="icon-btn" title="القائمة" aria-label="فتح القائمة" aria-controls="side-menu" aria-expanded="false" type="button">☰</button>
+      </div>
+    </div>
+
+    <div class="stories-bar" id="stories-bar">
+      <div class="story-add" id="story-add">
+        <div class="story-add-circle">＋</div>
+        <span>قصتي</span>
+      </div>
+    </div>
+
+    <div class="search-bar">
+      <input type="text" id="search-chats" placeholder="🔍 بحث...">
+    </div>
+
+    <section id="owner-contact-card" class="owner-contact-card" aria-label="التواصل مع مالك التطبيق">
+      <div class="owner-contact-loading">جارٍ تحميل ملف المالك…</div>
+    </section>
+
+    <div class="chat-tabs">
+      <button class="chat-tab active" data-ctab="all">الكل</button>
+      <button class="chat-tab" data-ctab="unread">غير مقروء</button>
+      <button class="chat-tab" data-ctab="groups">مجموعات</button>
+      <button class="chat-tab" data-ctab="archived">مؤرشفة</button>
+    </div>
+
+    <div class="chat-list" id="chat-list"></div>
+  </aside>
+
+  <!-- ============ Chat Area ============ -->
+  <main id="chat-area" class="chat-area">
+    <div id="chat-empty" class="chat-empty">
+      <div class="empty-icon"><img src="icons/ghost-caffee-icon.svg" alt="شبح يحمل فنجان قهوة"></div>
+      <h3>أهلاً بك في Ghost Caffee</h3>
+      <p>خذ رشفة قهوة، واختر محادثة تبدأ بها يومك.</p>
+      <div class="empty-features">
+        <div class="feat"><span>🔒</span>آمنة</div>
+        <div class="feat"><span>⚡</span>سريعة</div>
+        <div class="feat"><span>🎨</span>قابلة للتخصيص</div>
+      </div>
+    </div>
+
+    <div id="chat-view" class="chat-view hidden">
+      <!-- رأس المحادثة -->
+      <header class="chat-header">
+        <button id="btn-back" class="icon-btn mobile-only">←</button>
+        <div class="chat-user-avatar" id="chat-avatar">؟</div>
+        <div class="chat-user-info" id="chat-info-clickable">
+          <span class="chat-user-name" id="chat-name">محادثة</span>
+          <span class="chat-user-status" id="chat-status"></span>
+        </div>
+        <div class="chat-actions">
+          <button id="btn-chat-search" class="icon-btn" title="بحث">🔍</button>
+          <button id="btn-chat-menu" class="icon-btn" title="قائمة">⋮</button>
+        </div>
+      </header>
+
+      <!-- شريط البحث داخل المحادثة -->
+      <div class="chat-search-bar hidden" id="chat-search-bar">
+        <input type="text" id="chat-search-input" placeholder="ابحث في الرسائل...">
+        <button id="chat-search-close" class="icon-btn">✕</button>
+      </div>
+
+      <!-- معاينة الرد -->
+      <div class="reply-preview hidden" id="reply-preview">
+        <div class="reply-bar"></div>
+        <div class="reply-content">
+          <span class="reply-sender" id="reply-sender"></span>
+          <span class="reply-text" id="reply-text"></span>
+        </div>
+        <button id="reply-cancel" class="icon-btn">✕</button>
+      </div>
+
+      <!-- معاينة التعديل -->
+      <div class="reply-preview hidden" id="edit-preview">
+        <div class="reply-bar edit-bar"></div>
+        <div class="reply-content">
+          <span class="reply-sender">✏️ تعديل</span>
+          <span class="reply-text" id="edit-text"></span>
+        </div>
+        <button id="edit-cancel" class="icon-btn">✕</button>
+      </div>
+
+      <!-- لافتة الحظر -->
+      <div id="group-ban-banner" class="group-ban-banner hidden"></div>
+
+      <!-- حاوية الرسائل -->
+      <div class="messages-container" id="messages-container" data-wallpaper="default"></div>
+
+      <!-- مؤشر الكتابة -->
+      <div class="typing-indicator hidden" id="typing-indicator">
+        <span></span><span></span><span></span>
+      </div>
+
+      <!-- منتقي الإيموجي -->
+      <div class="emoji-picker hidden" id="emoji-picker">
+        <div class="emoji-tabs">
+          <button class="emoji-tab active" data-cat="smileys">😀</button>
+          <button class="emoji-tab" data-cat="hands">👍</button>
+          <button class="emoji-tab" data-cat="hearts">❤️</button>
+          <button class="emoji-tab" data-cat="animals">🐶</button>
+          <button class="emoji-tab" data-cat="food">🍕</button>
+          <button class="emoji-tab" data-cat="objects">💡</button>
+        </div>
+        <div class="emoji-grid" id="emoji-grid"></div>
+      </div>
+
+      <!-- تسجيل صوتي -->
+      <div class="voice-recording hidden" id="voice-recording">
+        <span class="rec-dot"></span>
+        <span class="rec-time" id="rec-time">0:00</span>
+        <button class="icon-btn" id="rec-cancel">✕</button>
+        <button class="icon-btn rec-send" id="rec-send">➤</button>
+      </div>
+
+      <!-- شريط الإدخال -->
+      <footer class="message-input-bar" id="input-bar">
+        <button id="btn-emoji" class="icon-btn">😀</button>
+        <button id="btn-attach" class="icon-btn">📎</button>
+        <input type="file" id="file-input" hidden accept="image/*,video/*,audio/*,.pdf,.doc,.docx,.txt,.zip">
+        <div class="message-input-wrapper">
+          <textarea id="message-input" placeholder="اكتب رسالة..." autocomplete="off" rows="1" maxlength="4000" spellcheck="true"></textarea>
+        </div>
+        <button id="btn-voice" class="icon-btn">🎤</button>
+        <button id="btn-send" class="icon-btn send-btn hidden">➤</button>
+      </footer>
+
+      <!-- شريط تقدم المرفق -->
+      <div class="upload-progress hidden" id="upload-progress">
+        <div class="progress-info">
+          <span id="upload-filename">ملف</span>
+          <span id="upload-percent">0%</span>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- ==================== Side Menu ==================== -->
+<div id="side-menu" class="side-menu hidden" aria-hidden="true">
+  <div class="menu-backdrop" id="menu-backdrop"></div>
+  <div class="side-menu-content">
+    <div class="menu-profile" id="menu-profile">
+      <div class="menu-avatar" id="menu-avatar">م</div>
+      <div>
+        <b id="menu-username">المستخدم</b>
+        <p id="menu-userdevice">جهاز</p>
+      </div>
+    </div>
+    <button class="menu-item danger menu-logout-button" id="btn-menu-logout" data-action="logout" type="button"><span class="menu-action-icon" aria-hidden="true">↪</span><span class="menu-logout-copy"><b>تسجيل الخروج</b><small>الخروج من هذا الجهاز بأمان</small></span></button>
+    <button class="menu-item" data-action="profile">👤 ملفي الشخصي</button>
+    <button class="menu-item" data-action="contacts">📇 جهات الاتصال</button>
+    <button class="menu-item" data-action="settings">⚙️ الإعدادات</button>
+    <button class="menu-item" data-action="admin" id="menu-admin">🛡️ لوحة الإدارة</button>
+    <button class="menu-item" data-action="blocked">🚫 المحظورون</button>
+    <button class="menu-item" data-action="about">ℹ️ حول التطبيق</button>
+    <button class="menu-item hidden" id="menu-secure-account" data-action="secure-account">🔐 تأمين الحساب الحالي بكلمة مرور</button>
+
+  </div>
+</div>
+
+<!-- ==================== Profile Modal ==================== -->
+<div id="profile-view" class="modal hidden">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>👤 الملف الشخصي</h3>
+      <button class="icon-btn modal-close">✕</button>
+    </div>
+    <div class="profile-body">
+      <div class="profile-avatar-big" id="profile-avatar-big">م</div>
+      <input type="file" id="avatar-input" accept="image/*" hidden>
+      <input type="file" id="profile-cover-input" accept="image/*" hidden>
+      <button class="btn-sm" id="btn-change-avatar">تغيير الصورة</button>
+      <button class="btn-sm" id="btn-change-cover">تغيير الغلاف</button>
+
+      <div class="input-group">
+        <span class="input-icon">🏷️</span>
+        <input type="text" id="profile-displayName" maxlength="40" placeholder="الاسم المعروض">
+      </div>
+      <div class="input-group">
+        <span class="input-icon">@</span>
+        <input type="text" id="profile-username" maxlength="20">
+      </div>
+      <div class="input-group">
+        <span class="input-icon">💭</span>
+        <input type="text" id="profile-bio" placeholder="نبذة" maxlength="100">
+      </div>
+      <div class="input-group">
+        <span class="input-icon">📱</span>
+        <input type="text" id="profile-device" disabled>
+      </div>
+
+      <button class="btn-primary" id="btn-save-profile">حفظ التغييرات</button>
+
+    </div>
+  </div>
+</div>
+
+<!-- ==================== Settings Modal ==================== -->
+<div id="settings-view" class="modal hidden">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>⚙️ الإعدادات</h3>
+      <button class="icon-btn modal-close">✕</button>
+    </div>
+    <div class="settings-body">
+      <h4>☕ ثيم التطبيق</h4>
+      <p class="theme-intro">ستة ألوان متوازنة لواجهة المقهى؛ يتغير المظهر دون المساس بحسابك أو محادثاتك.</p>
+      <div class="theme-picker" role="group" aria-label="ثيمات التطبيق">
+        <button class="theme-option" data-theme="coffee" type="button"><i class="theme-swatch swatch-coffee"></i><span>إسبريسو</span></button>
+        <button class="theme-option" data-theme="navy" type="button"><i class="theme-swatch swatch-navy"></i><span>ليل كحلي</span></button>
+        <button class="theme-option" data-theme="ocean" type="button"><i class="theme-swatch swatch-ocean"></i><span>أزرق المحيط</span></button>
+        <button class="theme-option" data-theme="forest" type="button"><i class="theme-swatch swatch-forest"></i><span>أخضر الغابة</span></button>
+        <button class="theme-option" data-theme="amethyst" type="button"><i class="theme-swatch swatch-amethyst"></i><span>جمشت هادئ</span></button>
+        <button class="theme-option" data-theme="light" type="button"><i class="theme-swatch swatch-light"></i><span>رمل فاتح</span></button>
+      </div>
+
+      <h4>💬 ثيم المحادثة</h4>
+      <div class="wallpaper-picker" role="group" aria-label="ثيمات المحادثات التسعة">
+        <button data-wp="default" type="button" aria-label="ثيم إسبريسو">إسبريسو</button>
+        <button data-wp="dark" type="button" aria-label="ثيم منتصف الليل">منتصف الليل</button>
+        <button data-wp="gray" type="button" aria-label="ثيم أردوازي">أردوازي</button>
+        <button data-wp="purple" type="button" aria-label="ثيم بنفسجي">بنفسجي</button>
+        <button data-wp="sunrise" type="button" aria-label="ثيم شروق">شروق</button>
+        <button data-wp="ocean" type="button" aria-label="ثيم محيط">محيط</button>
+        <button data-wp="sunset" type="button" aria-label="ثيم غروب">غروب</button>
+        <button data-wp="forest" type="button" aria-label="ثيم غابة">غابة</button>
+        <button data-wp="dots" type="button" aria-label="ثيم نقاط">نقاط</button>
+      </div>
+      <div class="theme-settings-note"><span>☕</span><p>يمكنك تخصيص ألوان التطبيق وخلفية المحادثات كلٌّ على حدة. تغيير الثيم لا يغيّر رسائلك أو حسابك.</p></div>
+
+      <h4>🔔 الإشعارات</h4>
+      <label class="switch-row">
+        <span>إشعارات التطبيق والمتصفح</span>
+        <input type="checkbox" id="opt-notifications">
+      </label>
+      <label class="switch-row">
+        <span>أصوات</span>
+        <input type="checkbox" id="opt-sounds" checked>
+      </label>
+      <label class="switch-row">
+        <span>مؤشرات القراءة</span>
+        <input type="checkbox" id="opt-read-receipts" checked>
+      </label>
+
+      <h4>🔐 الخصوصية</h4>
+      <label class="switch-row">
+        <span>إظهار آخر ظهور</span>
+        <input type="checkbox" id="opt-show-lastseen" checked>
+      </label>
+      <label class="switch-row">
+        <span>إظهار الحالة</span>
+        <input type="checkbox" id="opt-show-online" checked>
+      </label>
+
+      <h4>🔒 قفل PIN</h4>
+      <label class="switch-row">
+        <span>تفعيل قفل PIN</span>
+        <input type="checkbox" id="opt-pin">
+      </label>
+      <div class="input-group hidden" id="pin-change-group">
+        <span class="input-icon">🔑</span>
+        <input type="password" id="pin-input" placeholder="PIN جديد (4 أرقام)" maxlength="4" inputmode="numeric">
+      </div>
+      <button class="btn-sm hidden" id="btn-save-pin">حفظ PIN</button>
+
+      <h4>💾 البيانات</h4>
+      <button class="btn-primary" id="btn-export">📤 تصدير محادثاتي</button>
+      <button class="btn-danger" id="btn-clear-local">🗑️ مسح البيانات المحلية</button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== Contacts ==================== -->
+<div id="contacts-view" class="modal hidden">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>📇 جهات الاتصال</h3>
+      <button class="icon-btn modal-close">✕</button>
+    </div>
+    <div class="contacts-body" id="contacts-body"></div>
+  </div>
+</div>
+
+<!-- ==================== User Profile Viewer ==================== -->
+<div id="user-profile-view" class="modal hidden">
+  <div class="modal-content profile-modal-content">
+    <button class="icon-btn profile-modal-close modal-close">✕</button>
+
+    <div class="profile-cover" id="up-cover"></div>
+
+    <div class="profile-main">
+      <div class="profile-avatar-wrap">
+        <div class="profile-avatar-xl" id="up-avatar">👤</div>
+      </div>
+
+      <div class="profile-head-info">
+        <h2 class="profile-name" id="up-title">@user</h2>
+        <div class="profile-badges" id="up-badges"></div>
+        <p class="profile-bio-text" id="up-bio"></p>
+        <div class="profile-meta" id="up-meta"></div>
+      </div>
+
+      <div class="profile-stats-row" id="up-stats"></div>
+
+      <div class="profile-actions-row" id="up-actions"></div>
+    </div>
+
+    <div class="profile-tabs" id="up-tabs">
+      <button class="ptab active" data-ptab="about">حول</button>
+      <button class="ptab" data-ptab="followers">المتابعون</button>
+      <button class="ptab" data-ptab="following">يتابع</button>
+    </div>
+
+    <div class="profile-tab-content" id="up-tab-content"></div>
+  </div>
+</div>
+
+<!-- ==================== Message Info ==================== -->
+<div id="msg-info" class="modal hidden">
+  <div class="modal-content small">
+    <div class="modal-header">
+      <h3>📊 معلومات الرسالة</h3>
+      <button class="icon-btn modal-close">✕</button>
+    </div>
+    <div class="msg-info-body" id="msg-info-body"></div>
+  </div>
+</div>
+
+<!-- ==================== Image Viewer ==================== -->
+<div id="image-viewer" class="image-viewer hidden">
+  <img id="image-viewer-img" src="" alt="">
+  <button class="icon-btn image-viewer-close" id="image-viewer-close">✕</button>
+</div>
+
+<!-- ==================== Story Viewer ==================== -->
+<div id="story-viewer" class="story-viewer hidden">
+  <div class="story-progress" id="story-progress"></div>
+
+  <div class="story-header">
+    <div class="story-avatar" id="story-avatar">م</div>
+    <div class="story-header-info">
+      <b id="story-username">مستخدم</b>
+      <p id="story-time">الآن</p>
+    </div>
+    <button class="icon-btn hidden" id="story-views-btn" title="المشاهدات">👁️</button>
+    <button class="icon-btn hidden" id="story-reply-btn" title="رد">↩️</button>
+    <button class="icon-btn" id="story-report" title="إبلاغ">🚩</button>
+    <button class="icon-btn story-close" id="story-close" title="إغلاق">✕</button>
+  </div>
+
+  <div class="story-content" id="story-content"></div>
+
+  <!-- شريط التفاعلات العائم -->
+  <div class="story-reactions hidden" id="story-reactions"></div>
+
+  <!-- شريط الرد السفلي -->
+  <div class="story-reply-bar hidden" id="story-reply-bar">
+    <button id="story-emoji-btn" class="icon-btn" type="button">😀</button>
+    <input type="text" id="story-reply-text" placeholder="اكتب ردك..." maxlength="500" autocomplete="off">
+    <button id="story-reply-send-bar" class="icon-btn send-btn" type="button">➤</button>
+  </div>
+
+  <!-- منتقي الإيموجي داخل القصة -->
+  <div class="story-emoji-picker hidden" id="story-emoji-picker"></div>
+
+  <div class="story-nav">
+    <button class="story-nav-btn" id="story-prev">‹</button>
+    <button class="story-nav-btn" id="story-next">›</button>
+  </div>
+</div>
+
+<!-- ==================== Story Composer ==================== -->
+<div id="story-composer-view" class="modal hidden">
+  <div class="modal-content story-composer-modal">
+    <div class="modal-header">
+      <h3>✨ قصة جديدة</h3>
+      <button class="icon-btn modal-close">✕</button>
+    </div>
+
+    <div class="story-composer-body">
+      <!-- Preview -->
+      <div class="story-preview" id="story-preview">
+        <div class="story-preview-text" id="story-preview-text"></div>
+      </div>
+
+      <!-- Tools -->
+      <div class="story-tools">
+        <div class="story-tool-group" id="story-gradients-row">
+          <span class="story-tool-label">الخلفية</span>
+          <div class="story-gradients" id="story-gradients"></div>
+        </div>
+
+        <div class="story-tool-group">
+          <span class="story-tool-label">لون النص</span>
+          <div class="story-colors">
+            <button class="story-color active" data-color="#ffffff" style="--story-color:#ffffff" type="button" aria-label="أبيض"></button>
+            <button class="story-color" data-color="#111827" style="--story-color:#111827" type="button" aria-label="فحمي"></button>
+            <button class="story-color" data-color="#ff453a" style="--story-color:#ff453a" type="button" aria-label="أحمر"></button>
+            <button class="story-color" data-color="#ff8a00" style="--story-color:#ff8a00" type="button" aria-label="برتقالي"></button>
+            <button class="story-color" data-color="#ffd60a" style="--story-color:#ffd60a" type="button" aria-label="أصفر"></button>
+            <button class="story-color" data-color="#34c759" style="--story-color:#34c759" type="button" aria-label="أخضر"></button>
+            <button class="story-color" data-color="#00a884" style="--story-color:#00a884" type="button" aria-label="زمردي"></button>
+            <button class="story-color" data-color="#2dd4bf" style="--story-color:#2dd4bf" type="button" aria-label="فيروزي"></button>
+            <button class="story-color" data-color="#38bdf8" style="--story-color:#38bdf8" type="button" aria-label="سماوي"></button>
+            <button class="story-color" data-color="#2563eb" style="--story-color:#2563eb" type="button" aria-label="أزرق"></button>
+            <button class="story-color" data-color="#6366f1" style="--story-color:#6366f1" type="button" aria-label="نيلي"></button>
+            <button class="story-color" data-color="#a855f7" style="--story-color:#a855f7" type="button" aria-label="بنفسجي"></button>
+            <button class="story-color" data-color="#ec4899" style="--story-color:#ec4899" type="button" aria-label="وردي"></button>
+            <button class="story-color" data-color="#fb7185" style="--story-color:#fb7185" type="button" aria-label="مرجاني"></button>
+            <button class="story-color" data-color="#a3e635" style="--story-color:#a3e635" type="button" aria-label="ليموني"></button>
+          </div>
+        </div>
+
+        <div class="story-tool-group">
+          <span class="story-tool-label">حجم</span>
+          <div class="story-sizes">
+            <button class="story-size" data-size="small" type="button">ص</button>
+            <button class="story-size active" data-size="medium" type="button">م</button>
+            <button class="story-size" data-size="large" type="button">ك</button>
+            <button class="story-size" data-size="xlarge" type="button">ك+</button>
+          </div>
+        </div>
+      </div>
+
+      <textarea id="story-text-input" class="story-text-input" placeholder="اكتب شيئاً..." maxlength="200" rows="2"></textarea>
+
+      <div class="story-composer-actions">
+        <button id="story-pick-image" class="story-action-btn" type="button">
+          <span>📷</span> صورة
+        </button>
+        <button id="story-clear-image" class="story-action-btn hidden" type="button">
+          <span>🗑️</span> إزالة الصورة
+        </button>
+        <button id="story-publish" class="btn-primary story-publish-btn" type="button">نشر القصة</button>
+      </div>
+
+      <input type="file" id="story-image-input" accept="image/*" hidden>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== Chat Background Picker ==================== -->
+<div id="chat-background-modal" class="modal hidden">
+  <div class="modal-content small">
+    <div class="modal-header">
+      <h3>🎨 خلفية المحادثة</h3>
+      <button class="icon-btn modal-close">✕</button>
+    </div>
+    <div class="chat-bg-grid">
+      <button data-chat-bg="default">قهوة هادئة</button>
+      <button data-chat-bg="#211710">إسبريسو</button>
+      <button data-chat-bg="linear-gradient(135deg,#1a100b,#4a2c1b)">محمّص</button>
+      <button data-chat-bg="linear-gradient(135deg,#2b1a11,#795035)">كراميل</button>
+      <button data-chat-bg="linear-gradient(135deg,#24170f,#5b3a26,#2b1a11)">موكا</button>
+      <button data-chat-bg="radial-gradient(circle,#5c3b27 1px,transparent 1px) 0 0/22px 22px,#17100c">حبّات البن</button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== Group Creator ==================== -->
+<div id="group-view" class="modal hidden">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>👥 مجموعة جديدة</h3>
+      <button class="icon-btn modal-close">✕</button>
+    </div>
+    <div class="group-body">
+      <div class="input-group">
+        <span class="input-icon">📛</span>
+        <input type="text" id="group-name" placeholder="اسم المجموعة" maxlength="30">
+      </div>
+      <div class="input-group">
+        <span class="input-icon">🔍</span>
+        <input type="text" id="group-search" placeholder="ابحث...">
+      </div>
+      <div class="group-users" id="group-users"></div>
+      <div class="group-selected" id="group-selected"></div>
+      <button class="btn-primary" id="btn-create-group">إنشاء المجموعة</button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== Group Ban Modal ==================== -->
+<div id="group-ban-modal" class="modal hidden">
+  <div class="modal-content small">
+    <div class="modal-header">
+      <h3>🚫 حظر عضو من المجموعة</h3>
+      <button class="icon-btn modal-close">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="input-group">
+        <span class="input-icon">⏱</span>
+        <input id="group-ban-hours" type="number" min="1" max="720" value="24" placeholder="الساعات (1-720)">
+      </div>
+      <textarea id="group-ban-reason" maxlength="200" rows="3" placeholder="سبب الحظر (إلزامي)" style="width:100%;padding:10px;border-radius:12px;border:1px solid var(--border);background:var(--bg-input);color:var(--text-primary);font-family:inherit;resize:vertical;margin-bottom:10px"></textarea>
+      <button class="btn-danger" id="group-ban-confirm">تأكيد الحظر</button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== Invite Preview ==================== -->
+<div id="invite-preview-modal" class="modal hidden">
+  <div class="modal-content small">
+    <div class="modal-header">
+      <h3 id="invite-preview-title">مجموعة</h3>
+      <button class="icon-btn modal-close">✕</button>
+    </div>
+    <div class="modal-body">
+      <p id="invite-preview-body" style="margin-bottom:12px;color:var(--text-secondary)"></p>
+      <button class="btn-primary" id="invite-join-btn">الانضمام</button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== Context Menu ==================== -->
+<div id="context-menu" class="context-menu hidden">
+  <button data-action="reply">↩️ رد</button>
+  <button data-action="copy">📋 نسخ</button>
+  <button data-action="forward">↪️ إعادة توجيه</button>
+  <button data-action="star">⭐ نجمة</button>
+  <button data-action="info">ℹ️ معلومات</button>
+  <button data-action="report">🚩 إبلاغ</button>
+  <button data-action="edit" class="owner-only">✏️ تعديل</button>
+  <button data-action="delete" class="danger owner-only">🗑️ حذف</button>
+</div>
+
+<!-- ==================== Reaction Picker ==================== -->
+<div id="reaction-picker" class="reaction-picker hidden">
+  <button data-reaction="❤️">❤️</button>
+  <button data-reaction="👍">👍</button>
+  <button data-reaction="😂">😂</button>
+  <button data-reaction="😮">😮</button>
+  <button data-reaction="😢">😢</button>
+  <button data-reaction="🙏">🙏</button>
+</div>
+
+<!-- ==================== Chat Menu ==================== -->
+<div id="chat-menu" class="context-menu hidden">
+  <button data-action="background">🎨 خلفية المحادثة</button>
+  <button data-action="pin">📌 تثبيت</button>
+  <button data-action="mute">🔕 كتم</button>
+  <button data-action="archive">📦 أرشفة</button>
+  <button data-action="contact">📇 إضافة لجهات الاتصال</button>
+  <button data-action="export-chat">📤 تصدير المحادثة</button>
+  <button data-action="clear-chat" class="danger">🧹 مسح الرسائل لدي</button>
+  <button data-action="delete-chat-for-me" class="danger">🗑️ حذف المحادثة لدي</button>
+  <button data-action="block" class="danger">🚫 حظر</button>
+</div>
+<!-- ==================== Invite View (Create/Share) ==================== -->
+<div id="invite-view" class="modal hidden">
+  <div class="modal-content small">
+    <div class="modal-header">
+      <h3>🔗 رابط الدعوة</h3>
+      <button class="icon-btn modal-close">✕</button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:13px;color:var(--text-secondary);margin-bottom:12px">
+        شارك هذا الرابط لدعوة أعضاء للمجموعة:
+      </p>
+
+      <a id="invite-link" href="#" target="_blank" rel="noopener"
+         style="display:block;word-break:break-all;padding:12px;background:var(--bg-input);border-radius:10px;color:var(--accent);text-decoration:none;font-size:13px;margin-bottom:12px;border:1px solid var(--border)">
+      </a>
+
+      <div style="display:flex;gap:8px;margin-bottom:8px">
+        <button class="btn-primary" id="invite-copy" style="flex:1;padding:10px">📋 نسخ</button>
+        <button class="btn-primary" id="invite-share" style="flex:1;padding:10px;background:var(--accent)">📤 مشاركة</button>
+      </div>
+
+      <button class="btn-primary" id="invite-open" style="background:var(--warning);color:#000;padding:10px;margin-bottom:8px">
+        🔓 فتح الرابط في نافذة جديدة
+      </button>
+
+      <button class="btn-danger" id="invite-revoke" style="padding:10px">
+        🗑️ إلغاء الرابط (لن يعمل بعد الآن)
+      </button>
+    </div>
+  </div>
+</div>
+<!-- ==================== Generic Prompt Modal ==================== -->
+<div id="prompt-modal" class="modal hidden">
+  <div class="modal-content small">
+    <div class="modal-header">
+      <h3 id="prompt-title">إدخال</h3>
+    </div>
+    <div class="modal-body">
+      <p id="prompt-message" style="margin-bottom:12px"></p>
+      <div class="input-group" id="prompt-input-group">
+        <span class="input-icon">✏️</span>
+        <input type="text" id="prompt-input">
+      </div>
+      <div style="display:flex;gap:8px;margin-top:12px">
+        <button class="btn-primary" id="prompt-ok">موافق</button>
+        <button class="btn-danger" id="prompt-cancel" style="margin-top:0">إلغاء</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== Admin Panel ==================== -->
+<div id="admin-panel" class="admin-panel hidden">
+  <div class="admin-header">
+    <div class="admin-header-left">
+      <div class="admin-logo">🛡️</div>
+      <div>
+        <h2>لوحة الإدارة</h2>
+        <p id="admin-subtitle">مرحباً @data</p>
+      </div>
+    </div>
+    <button id="btn-close-admin" class="icon-btn">✕</button>
+  </div>
+
+  <div class="admin-tabs">
+    <button class="admin-tab active" data-atab="dashboard">📊 الرئيسية</button>
+    <button class="admin-tab" data-atab="users">👥 المستخدمون</button>
+    <button class="admin-tab" data-atab="devices">📱 الأجهزة</button>
+    <button class="admin-tab" data-atab="chats">💬 المحادثات</button>
+    <button class="admin-tab" data-atab="messages">📨 الرسائل</button>
+    <button class="admin-tab" data-atab="logs">📋 السجلات</button>
+    <button class="admin-tab" data-atab="settings">⚙️ الإعدادات</button>
+  </div>
+
+  <div class="admin-content" id="admin-content"></div>
+</div>
+
+<!-- ==================== About Modal ==================== -->
+<div id="about-view" class="modal hidden">
+  <div class="modal-content small">
+    <div class="modal-header">
+      <h3>ℹ️ حول التطبيق</h3>
+      <button class="icon-btn modal-close">✕</button>
+    </div>
+    <div class="about-body">
+      <div class="about-logo"><img src="icons/ghost-caffee-icon.svg" alt=""></div>
+      <h2 id="about-app-name">Ghost Caffee</h2>
+      <p class="about-version">الإصدار 7.4.4 · Ghost Caffee</p>
+      <div class="about-info">
+        <div class="about-row"><span>حسابك</span><b id="about-account-username">—</b></div>
+        <div class="about-row"><span>حالة الحساب</span><b id="about-account-status">—</b></div>
+        <div class="about-row"><span>معرّف حسابك</span><b id="about-account-id" style="font-size:11px">—</b></div>
+        <div class="about-row"><span>معرّف هذا الجهاز</span><b id="about-device-id" style="font-size:11px">—</b></div>
+      </div>
+      <button class="btn-primary" onclick="document.getElementById('about-view').classList.add('hidden')" style="margin-top:16px">حسناً</button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== Toast ==================== -->
+<div id="toast" class="toast hidden"></div>
+<div id="toast-container" class="toast-container"></div>
+
+<!-- ==================== Firebase SDKs ==================== -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="app.js?v=7.4.4"></script>
+
+<script>
+  // مهلة أمان: أظهر شاشة الدخول إذا طال بدء التطبيق.
+  setTimeout(function() {
+    var splash = document.getElementById('splash-screen');
+    var authScreen = document.getElementById('auth-screen');
+    var appScreen = document.getElementById('app-screen');
+    if (splash && !splash.classList.contains('hidden') && appScreen && appScreen.classList.contains('hidden')) {
+      splash.classList.add('hidden');
+      if (authScreen) authScreen.classList.remove('hidden');
+      var error = document.getElementById('auth-error');
+      if (error && !error.textContent) {
+        error.textContent = 'يستغرق الاتصال وقتاً أطول من المعتاد. تحقق من الإنترنت وتفعيل Email/Password في Firebase Authentication؛ لا تحتاج إلى بريد حقيقي داخل التطبيق.';
+        error.classList.remove('hidden');
+      }
+    }
+  }, 15000);
+</script>
+</body>
+</html>

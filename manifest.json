@@ -1,0 +1,22 @@
+{
+  "name": "Ghost Caffee",
+  "short_name": "Ghost Caffee",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#17100c",
+  "theme_color": "#2b1a11",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "description": "Ghost Caffee — قهوة دافئة، وصحبة أقرب."
+}

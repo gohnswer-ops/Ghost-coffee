@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 12,
+  "config": {
+    "app": {
+      "appName": "Ghost Caffee",
+      "maxAccountsPerDevice": 3,
+      "allowRegistration": true,
+      "schemaVersion": 12
+    }
+  }
+}
