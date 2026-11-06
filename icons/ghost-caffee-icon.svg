@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+<defs>
+ <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#3a2418"/><stop offset=".55" stop-color="#20140e"/><stop offset="1" stop-color="#0f0c09"/></linearGradient>
+ <linearGradient id="ghost" x1="0" y1="0" x2=".9" y2="1"><stop stop-color="#fff8ec"/><stop offset=".65" stop-color="#f2ddc1"/><stop offset="1" stop-color="#d6b18c"/></linearGradient>
+ <linearGradient id="cup" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#bd7945"/><stop offset="1" stop-color="#704126"/></linearGradient>
+ <linearGradient id="coffee" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#6e3719"/><stop offset="1" stop-color="#2d160b"/></linearGradient>
+ <filter id="shadow" x="-25%" y="-25%" width="150%" height="160%"><feGaussianBlur in="SourceAlpha" stdDeviation="9"/><feOffset dy="7"/><feComponentTransfer><feFuncA type="linear" slope=".4"/></feComponentTransfer><feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+</defs>
+<rect width="512" height="512" rx="116" fill="url(#bg)"/>
+<circle cx="256" cy="256" r="207" fill="none" stroke="#bb7d4d" stroke-width="7" opacity=".88"/>
+<circle cx="256" cy="256" r="188" fill="none" stroke="#e7bd8c" stroke-width="2" opacity=".22"/>
+<!-- rising coffee steam -->
+<path d="M302 102 C276 81 312 63 294 39 M339 112 C365 90 331 76 351 57" fill="none" stroke="#d49a68" stroke-width="10" stroke-linecap="round" opacity=".95"/>
+<!-- floating coffee bean -->
+<g transform="translate(113 350) rotate(-28)"><ellipse cx="0" cy="0" rx="21" ry="34" fill="#b77746"/><path d="M0 -26 C-10 -10 9 9 0 26" fill="none" stroke="#5d321b" stroke-width="4" stroke-linecap="round"/></g>
+<!-- ghost body -->
+<g filter="url(#shadow)">
+ <path d="M145 350 C118 334 104 301 109 264 C113 225 128 189 154 163 C177 139 210 127 241 134 C278 141 302 173 311 207 C319 237 315 266 309 291 C304 311 294 323 282 334 C269 346 257 329 242 337 C228 345 213 330 199 338 C182 348 168 334 157 342 Z" fill="url(#ghost)" stroke="#9f7656" stroke-width="5" stroke-linejoin="round"/>
+ <ellipse cx="193" cy="226" rx="13" ry="18" fill="#24160f"/><ellipse cx="258" cy="224" rx="13" ry="18" fill="#24160f"/>
+ <circle cx="197" cy="220" r="4" fill="#fff8ed"/><circle cx="262" cy="218" r="4" fill="#fff8ed"/>
+ <ellipse cx="166" cy="255" rx="13" ry="7" fill="#eaa38e" opacity=".68"/><ellipse cx="279" cy="253" rx="13" ry="7" fill="#eaa38e" opacity=".68"/>
+ <!-- tiny smile -->
+ <path d="M216 263 Q226 274 238 261" fill="none" stroke="#704a35" stroke-width="5" stroke-linecap="round"/>
+ <!-- hand holding cup -->
+ <path d="M260 279 C278 270 287 283 291 297" fill="none" stroke="#d6b18c" stroke-width="19" stroke-linecap="round"/>
+</g>
+<!-- coffee cup -->
+<g filter="url(#shadow)">
+ <path d="M291 280 L390 280 L378 359 Q340 383 307 357 Z" fill="url(#cup)" stroke="#e6bf94" stroke-width="5" stroke-linejoin="round"/>
+ <path d="M385 294 C427 286 430 330 394 339" fill="none" stroke="#bd7945" stroke-width="15" stroke-linecap="round"/>
+ <path d="M300 285 Q341 267 384 285" fill="none" stroke="#f6dec0" stroke-width="10" stroke-linecap="round"/>
+ <ellipse cx="342" cy="282" rx="43" ry="14" fill="#ead0ae"/>
+ <ellipse cx="342" cy="282" rx="35" ry="9" fill="url(#coffee)"/>
+ <path d="M340 278 C328 266 316 282 341 293 C367 279 355 265 340 278Z" fill="#f2d5a9"/>
+ <path d="M338 278 L344 288" stroke="#f2d5a9" stroke-width="3" stroke-linecap="round"/>
+ <ellipse cx="342" cy="368" rx="57" ry="11" fill="#d19a68" opacity=".28"/>
+</g>
+</svg>
